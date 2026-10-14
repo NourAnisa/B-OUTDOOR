@@ -933,6 +933,8 @@ def build_full_paper_b_outdoor():
         col_widths_cm=[0.8, 3.8, 5.5, 3.9]
     )
 
+    add_figure(doc, "fig_hills_gallery.png", "Lampiran Gambar 1. Dokumentasi Lanskap 9 Destinasi Perbukitan Unggulan Kalimantan Selatan pada Platform B-OUTDOOR", width_cm=13.5)
+
     for s in doc.sections:
         configure_section_margins(s)
 
