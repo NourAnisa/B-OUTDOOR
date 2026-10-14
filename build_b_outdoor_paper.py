@@ -654,25 +654,59 @@ def build_full_paper_b_outdoor():
     add_figure(doc, "fig_3_1_methodology.png", "Gambar 3.1 Alur Tahapan Penelitian Berbasis Design Science Research Methodology (DSRM)", width_cm=13.2)
 
     add_sub_bab(doc, "3.2 Sumber Data dan Protokol Pengumpulan")
-    add_para(doc, "Spesifikasi sumber data yang diolah dalam penelitian dirinci pada Tabel 3.1.")
+    add_para(doc,
+        "Penelitian ini mengombinasikan himpunan data primer lapangan berbasis partisipasi komunitas (Citizen Science) "
+        "dengan data sekunder resmi dari instansi pemerintah daerah. Spesifikasi himpunan data dirinci pada Tabel 3.1."
+    )
 
     add_styled_table(
         doc,
         "Tabel 3.1 Spesifikasi Sumber Data Primer dan Sekunder Penelitian B-OUTDOOR",
         ["No", "Nama Himpunan Data", "Sumber / Metode Perolehan", "Volume Amatan", "Variabel yang Dianalisis"],
         [
-            ["1", "Direktori Bukit Eksotis Kalsel", "Survei Lapangan & Validasi Pokdarwis", "18 Destinasi Bukit", "Nama, koordinat, elevasi (mdpl), jarak BJM, rute, tiket, fasilitas"],
-            ["2", "Data Citizen Science River Patrol", "Aksi Susur Sungai Relawan Mapala", "36 Titik Stasiun Sungai", "Koordinat geotagging, jenis sampah dominan, foto, status alur"],
+            ["1", "Direktori Bukit Eksotis Kalsel", "Survei Lapangan & Validasi Pokdarwis", "18 Destinasi Bukit", "Nama, koordinat GPS, elevasi (mdpl), jarak BJM, rute, tiket, fasilitas"],
+            ["2", "Data Citizen Science River Patrol", "Aksi Susur Sungai Relawan Mapala", "36 Titik Stasiun Sungai", "Koordinat geotagging, jenis sampah dominan, foto in-situ, status alur"],
             ["3", "Pengukuran Fisik Mutu Air Sungai", "Pengujian In-Situ Portable Digital Meter", "36 Sampel Air Permukaan", "Derajat keasaman (pH) dan Total Dissolved Solids (TDS dlm ppm)"],
-            ["4", "Jaringan Sungai Resmi Banjarmasin", "Portal Satu Data & SK Pemkot BJM", "512 Alur Sungai", "Klasifikasi sungai besar, sedang, kecil, dan status fungsional"]
+            ["4", "Jaringan Hidrologi Sungai Resmi", "Portal Satu Data & SK Pemkot BJM", "512 Alur Sungai", "Klasifikasi sungai besar, sedang, kecil, dan status fungsional drainase"],
+            ["5", "Rantai Pasok Usaha Rental Outdoor", "Survei Direktori UMKM & BPS BJM", "25 Unit Usaha Terdata", "Pusat sebaran rental di koridor kota, ragam peralatan, tarif logistik"]
         ],
         col_widths_cm=[0.8, 3.2, 3.2, 2.8, 4.0]
     )
 
+    add_sub_sub_bab(doc, "3.2.1 Protokol Perolehan dan Validasi Data Direktori Perbukitan Kalsel")
     add_para(doc,
-        "Protokol pengukuran in-situ kualitas air dilakukan menggunakan instrumen digital calibrated pen-type TDS meter "
-        "(akurasi \u00b12 persen) dan pH meter (akurasi \u00b10,1) pada kedalaman 10–20 cm dari permukaan air sungai. Geotagging titik "
-        "koordinat dicatat menggunakan GPS gawai cerdas terintegrasi aplikasi navigasi lapangan dengan ketelitian radius di bawah 5 meter."
+        "Data geospasial 18 destinasi perbukitan diperoleh melalui integrasi data citra satelit elevasi digital Shuttle Radar "
+        "Topography Mission (SRTM/DEM) 30 meter dengan survei lapangan navigasi darat oleh tim Mapala. Validasi atribut non-spasial "
+        "(seperti biaya retribusi simaksi, ketersediaan mata air, batas area perkemahan, dan status jalur) dikonfirmasikan secara "
+        "langsung kepada pengelola Kelompok Sadar Wisata (Pokdarwis) desa setempat, meliputi: (1) Pokdarwis Tiwingan Lama (Bukit "
+        "Matang Kaladan dan Bukit Batas, Waduk Riam Kanan); (2) Pokdarwis Martadah Baru (Bukit Telang, Tambang Ulang); (3) Pokdarwis "
+        "Kandangan Lama (Bukit Birah dan Bukit Lebak Naga, Panyipatan); (4) Pokdarwis Lumpangi (Bukit Langara, Loksado); (5) Balai Adat "
+        "Dayak Meratus dan Pos Kiyu (Puncak Halau-Halau 1.901 mdpl); (6) Pengelola Kawasan Kiram Park (Bukit Mawar); serta (7) Pokdarwis "
+        "Tebing Siring (Bukit Riam Bejanjang). Data sekunder pendukung disinkronkan dengan Direktori Potensi Daya Tarik Wisata Alam (2024) "
+        "Dinas Kepemudaan, Olahraga, dan Pariwisata (Disporapar) Provinsi Kalimantan Selatan serta dokumen Badan Pengelola Geopark Pegunungan Meratus."
+    )
+
+    add_sub_sub_bab(doc, "3.2.2 Protokol Pengukuran In-Situ Mutu Air dan Inventarisasi Sampah Sungai")
+    add_para(doc,
+        "Pemantauan kualitas perairan sungai perkotaan menerapkan pendekatan Citizen Science berbasis susur sungai partisipatif oleh "
+        "relawan pecinta alam pada 36 titik stasiun yang tersebar di lima kecamatan Kota Banjarmasin. Stasiun amatan mencakup alur "
+        "utama Sungai Martapura (Siring Nol Km, Pierre Tendean, Sudimampir, Banua Anyar), Sungai Kuin (Makam Sultan Suriansyah, Simpang Cerucuk), "
+        "Sungai Pekapuran (Jembatan Kuripan, Pekapuran Raya), Sungai Awang (Kayutangi Ujung, Alalak Utara), Sungai Guring (Pemurus Dalam, "
+        "Kelayan), dan perairan muara Sungai Barito (Kuin Cerucuk, Basirih). Pengukuran fisik dilakukan secara in-situ pada lapisan air "
+        "permukaan (kedalaman 10–20 cm) menggunakan instrumen digital terkalibrasi: Total Dissolved Solids (TDS) meter pen-type (akurasi \u00b12%) "
+        "dan pH meter digital (akurasi \u00b10,1). Nilai pengamatan kemudian dibandingkan terhadap baku mutu air sungai Kelas II Lampiran VI "
+        "Peraturan Pemerintah (PP) No. 22 Tahun 2021 (ambang batas TDS maksimal 1.000 mg/L dan pH rentang 6,0–9,0). Validasi tren makro "
+        "disandingkan dengan Dokumen Informasi Kinerja Pengelolaan Lingkungan Hidup Daerah (DIKPLHD) Dinas Lingkungan Hidup Kota Banjarmasin."
+    )
+
+    add_sub_sub_bab(doc, "3.2.3 Sumber Data Spasial Hidrologi dan Rantai Pasok Ekonomi Kreatif")
+    add_para(doc,
+        "Data batas administratif, hidrologi, dan klasifikasi 512 alur sungai (290 sungai aktif bernama) diunduh secara resmi melalui "
+        "Portal Satu Data Kota Banjarmasin (satudata.banjarmasinkota.go.id) yang dikelola Dinas Komunikasi, Informatika dan Statistik, "
+        "merujuk pada Keputusan Wali Kota Banjarmasin tentang penetapan jaringan alur sungai kota. Sementara itu, data rantai pasok "
+        "ekonomi kreatif persewaan peralatan alam bebas (outdoor gear rental) dihimpun melalui survei direktori unit usaha di koridor "
+        "jalan utama (Jl. Hasan Basry Kayutangi, Jl. Sultan Adam, dan Jl. Gatot Subroto) serta dikonfirmasi dengan publikasi Kota Banjarmasin "
+        "dalam Angka (BPS, 2023) dan RPJPD Kota Banjarmasin 2025–2045 (Bappedalitbang)."
     )
 
     add_sub_bab(doc, "3.3 Formulasi Matematis Pemodelan Kualitas Air dan Spasial")
