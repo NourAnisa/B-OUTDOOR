@@ -1,0 +1,8 @@
+# B-OUTDOOR Git Ignore
+*.docx
+*.pdf
+*.log
+*.tmp
+*.ps1
+__pycache__/
+.vscode/

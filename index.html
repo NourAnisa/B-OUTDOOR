@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B-OUTDOOR — Geoportal Wisata Perbukitan Kalsel & Konservasi Sungai Banjarmasin</title>
+    
+    <!-- Meta SEO & Social Sharing -->
+    <meta name="description" content="B-OUTDOOR: Geoportal Wisata Petualangan Perbukitan Kalimantan Selatan dan Konservasi Sungai Berbasis Komunitas Pecinta Alam di Kota Banjarmasin.">
+    <meta name="keywords" content="B-OUTDOOR, Mapala Banjarmasin, Wisata Bukit Kalsel, Bukit Matang Kaladan, Bukit Telang, Bukit Langara, Meratus Geopark, Sungai Banjarmasin">
+    <meta name="author" content="Tim Riset Mahasiswa & Nor Anisa - Universitas Sari Mulia">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        forest: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            950: '#052e16'
+                        },
+                        river: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            700: '#0369a1',
+                            900: '#0c4a6e'
+                        },
+                        amberwood: {
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        serif: ['Merriweather', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Leaflet.js (Map Library) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Font Awesome & Lucide Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Merriweather:ital,wght@0,400;0,700;1,300&display=swap" rel="stylesheet">
+
+    <style>
+        .custom-popup .leaflet-popup-content-wrapper {
+            border-radius: 12px;
+            padding: 4px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, rgba(5, 46, 22, 0.92) 0%, rgba(12, 74, 110, 0.88) 100%), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+        }
+        .badge-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .6; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-forest-500 selection:text-white">
+
+    <!-- TOP ANNOUNCEMENT BANNER -->
+    <div class="bg-forest-950 text-forest-100 text-xs py-2 px-4 text-center font-medium border-b border-forest-800 flex justify-center items-center gap-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 badge-pulse"></span>
+        <span>Platform Riset Ilmiah Mahasiswa — LKTI Bappedalitbang Kota Banjarmasin Tahun 2026 | Kategori Umum</span>
+        <a href="#tentang" class="underline hover:text-white ml-2">Pelajari Konsep &rarr;</a>
+    </div>
+
+    <!-- MAIN NAVBAR -->
+    <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 transition-all duration-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <!-- Brand Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-forest-700 via-forest-800 to-river-900 flex items-center justify-center text-white shadow-md shadow-forest-900/20">
+                        <i class="fa-solid fa-mountain-sun text-lg"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-forest-800 to-river-700 bg-clip-text text-transparent">B-OUTDOOR</span>
+                            <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded">GEOPORTAL</span>
+                        </div>
+                        <p class="text-[10px] text-slate-500 font-medium">Banjarmasin Outdoor & River Patrol Hub</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Nav Links -->
+                <div class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-600">
+                    <a href="#beranda" class="hover:text-forest-700 transition">Beranda</a>
+                    <a href="#geoportal" class="hover:text-forest-700 transition flex items-center gap-1"><i class="fa-solid fa-map-location-dot text-emerald-600"></i> Peta Spasial</a>
+                    <a href="#direktori-bukit" class="hover:text-forest-700 transition">Direktori Bukit</a>
+                    <a href="#river-patrol" class="hover:text-forest-700 transition flex items-center gap-1"><i class="fa-solid fa-water text-river-500"></i> River Patrol</a>
+                    <a href="#zero-waste" class="hover:text-forest-700 transition">Zero-Waste (LNT)</a>
+                    <a href="#outdoor-hub" class="hover:text-forest-700 transition">Hub Banjarmasin</a>
+                </div>
+
+                <!-- Action Button -->
+                <div class="flex items-center gap-3">
+                    <a href="#form-lapor" class="hidden sm:inline-flex items-center gap-2 bg-gradient-to-r from-forest-700 to-forest-800 text-white text-xs font-bold px-4 py-2.5 rounded-lg shadow-sm hover:from-forest-800 hover:to-forest-900 transition">
+                        <i class="fa-solid fa-camera"></i>
+                        <span>Lapor Sampah/Rute</span>
+                    </a>
+                    <a href="https://github.com/NourAnisa/B-OUTDOOR" target="_blank" class="p-2 text-slate-500 hover:text-slate-800 transition" title="Repositori GitHub">
+                        <i class="fa-brands fa-github text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header id="beranda" class="relative hero-gradient text-white py-16 sm:py-24 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="max-w-3xl">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold mb-6">
+                    <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                    <span>Sinergi Mapala & Geopark Meratus Menuju UNESCO</span>
+                </div>
+                <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight sm:leading-none mb-6">
+                    Menghubungkan <span class="text-emerald-300">Puncak Bukit Meratus</span> dan <span class="text-cyan-300">Denyut Sungai Banjar</span>
+                </h1>
+                <p class="text-base sm:text-lg text-slate-200 mb-8 leading-relaxed font-normal">
+                    Platform Geospasial Terpadu yang memposisikan <strong class="text-white">Kota Banjarmasin sebagai Pintu Gerbang (Central Gateway)</strong> ekowisata alam bebas Kalimantan Selatan, memadukan direktori pendakian perbukitan dengan pemantauan sungai partisipatif berbasis komunitas pecinta alam.
+                </p>
+                
+                <div class="flex flex-wrap items-center gap-4">
+                    <a href="#geoportal" class="inline-flex items-center gap-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-6 py-3.5 rounded-xl shadow-lg shadow-emerald-500/25 transition">
+                        <i class="fa-solid fa-map"></i>
+                        <span>Buka Peta Geoportal Interaktif</span>
+                    </a>
+                    <a href="#direktori-bukit" class="inline-flex items-center gap-2 bg-white/15 hover:bg-white/25 backdrop-blur-md text-white font-semibold px-5 py-3.5 rounded-xl border border-white/25 transition">
+                        <i class="fa-solid fa-compass"></i>
+                        <span>Jelajahi 18+ Bukit Kalsel</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- STATISTIC METRICS GRID -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-12 pt-8 border-t border-white/15">
+                <div class="bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10">
+                    <p class="text-xs text-slate-300 uppercase tracking-wider font-semibold">Destinasi Bukit</p>
+                    <p class="text-2xl sm:text-3xl font-extrabold text-white mt-1">18+ <span class="text-xs font-normal text-emerald-300">Terkurasi</span></p>
+                    <p class="text-[11px] text-slate-300 mt-1">Lengkap elevasi & rute jalan</p>
+                </div>
+                <div class="bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10">
+                    <p class="text-xs text-slate-300 uppercase tracking-wider font-semibold">Jaringan Sungai BJM</p>
+                    <p class="text-2xl sm:text-3xl font-extrabold text-cyan-300 mt-1">512 <span class="text-xs font-normal text-slate-200">Sungai</span></p>
+                    <p class="text-[11px] text-slate-300 mt-1">290 sungai aktif bernama</p>
+                </div>
+                <div class="bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10">
+                    <p class="text-xs text-slate-300 uppercase tracking-wider font-semibold">Titik River Patrol</p>
+                    <p class="text-2xl sm:text-3xl font-extrabold text-amber-300 mt-1">36 <span class="text-xs font-normal text-slate-200">Titik</span></p>
+                    <p class="text-[11px] text-slate-300 mt-1">Pantauan sampah & mutu air</p>
+                </div>
+                <div class="bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10">
+                    <p class="text-xs text-slate-300 uppercase tracking-wider font-semibold">Etika Konservasi</p>
+                    <p class="text-2xl sm:text-3xl font-extrabold text-emerald-300 mt-1">100% <span class="text-xs font-normal text-slate-200">LNT</span></p>
+                    <p class="text-[11px] text-slate-300 mt-1">Prinsip Leave No Trace</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- SECTION 1: GEOPORTAL SPASIAL (WEBGIS INTERAKTIF) -->
+    <section id="geoportal" class="py-14 sm:py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+                <div>
+                    <span class="text-xs font-bold text-forest-700 uppercase tracking-wider bg-forest-50 px-3 py-1 rounded-full border border-forest-200">
+                        <i class="fa-solid fa-layer-group"></i> Multi-Layer Geoportal Spasial
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">
+                        Peta Interaktif Destinasi Bukit & Jalur Pantau Sungai
+                    </h2>
+                    <p class="text-slate-600 text-sm mt-1 max-w-2xl">
+                        Visualisasi spasial terintegrasi antara rute bukit di wilayah hulu Kalimantan Selatan dengan titik pantau kebersihan sungai lahan basah di hilir Kota Banjarmasin.
+                    </p>
+                </div>
+
+                <!-- Layer Filter Control Buttons -->
+                <div class="flex flex-wrap gap-2">
+                    <button id="btn-filter-all" onclick="filterMapLayer('all')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-white shadow-sm transition">
+                        Semua Lapisan
+                    </button>
+                    <button id="btn-filter-hills" onclick="filterMapLayer('hills')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-emerald-100 hover:text-emerald-800 transition flex items-center gap-1.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> Bukit Kalsel (18)
+                    </button>
+                    <button id="btn-filter-river" onclick="filterMapLayer('river')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-sky-100 hover:text-sky-800 transition flex items-center gap-1.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span> River Patrol BJM (6)
+                    </button>
+                    <button id="btn-filter-hub" onclick="filterMapLayer('hub')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-amber-100 hover:text-amber-800 transition flex items-center gap-1.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Basecamp & Hub (4)
+                    </button>
+                </div>
+            </div>
+
+            <!-- MAP CONTAINER -->
+            <div class="relative bg-slate-100 rounded-2xl overflow-hidden shadow-xl border border-slate-200">
+                <div id="outdoor-map" class="w-full h-[540px] z-10"></div>
+                
+                <!-- Floating Map Legend -->
+                <div class="absolute bottom-4 right-4 z-20 bg-white/95 backdrop-blur-md p-3.5 rounded-xl shadow-lg border border-slate-200 text-xs max-w-xs">
+                    <p class="font-bold text-slate-800 mb-2 border-b pb-1">Legenda Peta Spasial</p>
+                    <div class="space-y-1.5">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3.5 h-3.5 rounded-full bg-emerald-600 border-2 border-white shadow-sm flex items-center justify-center text-[8px] text-white font-bold"><i class="fa-solid fa-mountain"></i></span>
+                            <span>Destinasi Bukit / Puncak Trekking</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-3.5 h-3.5 rounded-full bg-sky-500 border-2 border-white shadow-sm flex items-center justify-center text-[8px] text-white font-bold"><i class="fa-solid fa-water"></i></span>
+                            <span>Pos Pantau Sungai & Sampah (BJM)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-3.5 h-3.5 rounded-full bg-amber-500 border-2 border-white shadow-sm flex items-center justify-center text-[8px] text-white font-bold"><i class="fa-solid fa-campground"></i></span>
+                            <span>Sekretariat Mapala / Hub Rental BJM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-xs text-slate-500 mt-2 text-right italic">
+                *Klik pada ikon marker peta untuk menampilkan informasi elevasi, estimasi jarak dari Banjarmasin, dan status jalur.
+            </p>
+        </div>
+    </section>
+
+    <!-- SECTION 2: DIREKTORI BUKIT-BUKIT EKSOTIS KALSEL -->
+    <section id="direktori-bukit" class="py-14 sm:py-20 bg-slate-100 border-y border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+                <div>
+                    <span class="text-xs font-bold text-emerald-800 uppercase tracking-wider bg-emerald-100 px-3 py-1 rounded-full">
+                        <i class="fa-solid fa-compass"></i> Ensiklopedia Jalur Pendakian
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">
+                        Direktori Bukit & Puncak Eksotis Kalimantan Selatan
+                    </h2>
+                    <p class="text-slate-600 text-sm mt-1 max-w-2xl">
+                        Dihimpun dari catatan ekspedisi komunitas pecinta alam: elevasi, jarak dari Kota Banjarmasin, estimasi waktu trekking, fasilitas basecamp, dan biaya retribusi.
+                    </p>
+                </div>
+
+                <!-- Category Tabs -->
+                <div class="flex flex-wrap gap-2 text-xs font-bold">
+                    <button onclick="filterHills('all')" class="hill-tab active px-3.5 py-2 rounded-lg bg-forest-800 text-white shadow-sm transition">Semua Wilayah</button>
+                    <button onclick="filterHills('banjar')" class="hill-tab px-3.5 py-2 rounded-lg bg-white text-slate-700 hover:bg-slate-200 transition">Kab. Banjar (Riam Kanan)</button>
+                    <button onclick="filterHills('tanahlaut')" class="hill-tab px-3.5 py-2 rounded-lg bg-white text-slate-700 hover:bg-slate-200 transition">Kab. Tanah Laut (Pelaihari)</button>
+                    <button onclick="filterHills('meratus')" class="hill-tab px-3.5 py-2 rounded-lg bg-white text-slate-700 hover:bg-slate-200 transition">Pegunungan Meratus / HSS-HST</button>
+                </div>
+            </div>
+
+            <!-- HILLS CARDS GRID -->
+            <div id="hills-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Javascript will render hill cards dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: CITIZEN SCIENCE & RIVER PATROL BANJARMASIN -->
+    <section id="river-patrol" class="py-14 sm:py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-xs font-bold text-sky-800 uppercase tracking-wider bg-sky-100 px-3 py-1 rounded-full">
+                    <i class="fa-solid fa-water"></i> Citizen Science Lahan Basah
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">
+                    Pemantauan Kebersihan Sungai & Kualitas Air Banjarmasin
+                </h2>
+                <p class="text-slate-600 text-sm mt-2">
+                    Aksi susur sungai berkala oleh komunitas Mapala kampus Banjarmasin untuk mendata titik sumbatan sampah plastik, biomassa eceng gondok (ilung), dan memantau parameter fisik mutu air baku.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <!-- Left: Chart & Statistics -->
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-800">Komparasi TDS (Total Padatan Terlarut) Air Sungai</h3>
+                                <p class="text-xs text-slate-500">Standar Baku Mutu PP No. 22 Tahun 2021 (Baku Mutu Kelas II = Maks. 1.000 mg/L)</p>
+                            </div>
+                            <span class="text-[10px] bg-sky-100 text-sky-800 font-bold px-2 py-0.5 rounded">Hasil Pengukuran</span>
+                        </div>
+                        <div class="h-64">
+                            <canvas id="riverTdsChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <h3 class="text-sm font-bold text-slate-800 mb-1">Proporsi Komposisi Sampah Terapung Hasil Susur Sungai</h3>
+                        <p class="text-xs text-slate-500 mb-4">Analisis sampel timbulan sampah permukaan pada 36 titik pengamatan anak sungai</p>
+                        <div class="h-56">
+                            <canvas id="wasteCompositionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Recent Patrol Data Table -->
+                <div class="lg:col-span-5 bg-slate-50 p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-sm font-bold text-slate-800">Log Data Patroli Susur Sungai Terkini</h3>
+                        <span class="text-xs text-emerald-700 font-semibold">Live Citizen Science</span>
+                    </div>
+
+                    <div class="space-y-3.5 overflow-y-auto max-h-[510px] pr-1">
+                        <!-- River Log Item 1 -->
+                        <div class="p-3.5 bg-white rounded-xl border border-slate-200 shadow-xs hover:border-sky-300 transition">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-[10px] font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded">Sungai Martapura (Siring Nol Km)</span>
+                                    <h4 class="text-xs font-bold text-slate-800 mt-1">Titik Dermaga Pasar Terapung</h4>
+                                </div>
+                                <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded">Terkendali</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 mt-2 pt-2 border-t border-slate-100 text-[11px] text-slate-600">
+                                <div><strong>pH:</strong> 6.8 (Normal)</div>
+                                <div><strong>TDS:</strong> 85 ppm</div>
+                                <div><strong>Sampah:</strong> Plastik Ringan</div>
+                            </div>
+                        </div>
+
+                        <!-- River Log Item 2 -->
+                        <div class="p-3.5 bg-white rounded-xl border border-slate-200 shadow-xs hover:border-amber-300 transition">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-[10px] font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded">Sungai Kuin (Banjarmasin Utara)</span>
+                                    <h4 class="text-xs font-bold text-slate-800 mt-1">Muara Kolong Jembatan Kuin</h4>
+                                </div>
+                                <span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.5 rounded">Sumbatan Ilung</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 mt-2 pt-2 border-t border-slate-100 text-[11px] text-slate-600">
+                                <div><strong>pH:</strong> 6.5 (Normal)</div>
+                                <div><strong>TDS:</strong> 120 ppm</div>
+                                <div><strong>Sampah:</strong> Eceng Gondok</div>
+                            </div>
+                        </div>
+
+                        <!-- River Log Item 3 -->
+                        <div class="p-3.5 bg-white rounded-xl border border-slate-200 shadow-xs hover:border-rose-300 transition">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-[10px] font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded">Sungai Pekapuran (Banjarmasin Tengah)</span>
+                                    <h4 class="text-xs font-bold text-slate-800 mt-1">Bantaran Pasar Kuripan</h4>
+                                </div>
+                                <span class="text-[10px] bg-rose-100 text-rose-800 font-bold px-1.5 py-0.5 rounded">Perlu Aksi Bersih</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 mt-2 pt-2 border-t border-slate-100 text-[11px] text-slate-600">
+                                <div><strong>pH:</strong> 6.2 (Asam Lemah)</div>
+                                <div><strong>TDS:</strong> 210 ppm</div>
+                                <div><strong>Sampah:</strong> Residu Domestik</div>
+                            </div>
+                        </div>
+
+                        <!-- River Log Item 4 -->
+                        <div class="p-3.5 bg-white rounded-xl border border-slate-200 shadow-xs hover:border-sky-300 transition">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-[10px] font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded">Sungai Awang (Banjarmasin Utara)</span>
+                                    <h4 class="text-xs font-bold text-slate-800 mt-1">Alur Kayutangi Ujung</h4>
+                                </div>
+                                <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded">Arus Lancar</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 mt-2 pt-2 border-t border-slate-100 text-[11px] text-slate-600">
+                                <div><strong>pH:</strong> 6.7 (Normal)</div>
+                                <div><strong>TDS:</strong> 95 ppm</div>
+                                <div><strong>Sampah:</strong> Ranting Kayu</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: FORMULIR PELAPORAN CEPAT (CITIZEN REPORTING) -->
+    <section id="form-lapor" class="py-14 sm:py-20 bg-slate-900 text-white relative overflow-hidden">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-8">
+                <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider bg-white/10 px-3 py-1 rounded-full border border-white/20">
+                    <i class="fa-solid fa-bullhorn"></i> Partisipasi Warga & Penggiat Alam
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-2">
+                    Laporkan Timbulan Sampah Sungai atau Kondisi Jalur Bukit
+                </h2>
+                <p class="text-slate-300 text-sm mt-1 max-w-xl mx-auto">
+                    Kirimkan laporan Anda langsung dari lokasi. Koordinat GPS dan foto akan diverifikasi oleh relawan Mapala untuk diteruskan ke Dinas Lingkungan Hidup (DLH) Kota Banjarmasin atau Pokdarwis Bukit.
+                </p>
+            </div>
+
+            <div class="bg-slate-800/80 backdrop-blur-md p-6 sm:p-8 rounded-2xl border border-slate-700 shadow-2xl">
+                <form id="citizenReportForm" onsubmit="handleReportSubmit(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1">Nama Pelapor / Organisasi Mapala</label>
+                            <input type="text" required placeholder="Contoh: Ahmad (Mapala Unism)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1">Kategori Laporan</label>
+                            <select id="reportCategory" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                                <option value="river">Timbulan Sampah Sungai (Banjarmasin)</option>
+                                <option value="hill">Sampah / Kerusakan Jalur Bukit (Kalsel)</option>
+                                <option value="water">Pencemaran Kualitas Air Sungai</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1">Lokasi Spesifik / Nama Sungai / Bukit</label>
+                            <input type="text" required placeholder="Contoh: Bawah Jembatan Sungai Pekapuran" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1">Koordinat GPS (Otomatis dari Peramban)</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="geoCoordinates" readonly value="-3.3194, 114.5908" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2 text-xs text-emerald-400 font-mono">
+                                <button type="button" onclick="getLiveLocation()" class="bg-slate-700 hover:bg-slate-600 px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1" title="Dapatkan Lokasi Sekarang">
+                                    <i class="fa-solid fa-location-crosshairs"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 mb-1">Keterangan Kondisi Lapangan</label>
+                        <textarea rows="3" required placeholder="Jelaskan jenis sampah dominan (plastik, kayu, eceng gondok) atau tingkat kerusakan jalur..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Kirim Laporan Lapangan ke Geoportal</span>
+                    </button>
+                </form>
+
+                <div id="reportSuccessAlert" class="hidden mt-4 p-4 rounded-xl bg-emerald-900/60 border border-emerald-500 text-emerald-200 text-xs text-center font-medium">
+                    <i class="fa-solid fa-circle-check text-emerald-400 mr-1.5"></i>
+                    Laporan lapangan Anda berhasil diterima dan tercatat pada basis data spasial B-OUTDOOR!
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: ZERO-WASTE OUTDOOR & LEAVE NO TRACE -->
+    <section id="zero-waste" class="py-14 sm:py-20 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-xs font-bold text-emerald-800 uppercase tracking-wider bg-emerald-100 px-3 py-1 rounded-full">
+                    <i class="fa-solid fa-seedling"></i> Etika Petualang Berkelanjutan
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">
+                    Prinsip Zero-Waste & Leave No Trace (LNT)
+                </h2>
+                <p class="text-slate-600 text-sm mt-1">
+                    Komitmen bersama komunitas pecinta alam untuk menjaga kesucian perbukitan Kalsel dan kebersihan sungai Banjarmasin.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Principle 1 -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-emerald-300 transition">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl mb-4">
+                        <i class="fa-solid fa-trash-arrow-up"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-slate-800 mb-2">Bawa Pulang Sampahmu Sendiri</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Segala kemasan logistik makanan, botol plastik, dan tisu basah yang dibawa naik ke bukit <strong>wajib dibawa turun kembali</strong> ke Kota Banjarmasin dan dibuang pada tempat sampah resmi.
+                    </p>
+                </div>
+
+                <!-- Principle 2 -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-emerald-300 transition">
+                    <div class="w-12 h-12 rounded-xl bg-sky-50 text-sky-700 flex items-center justify-center text-xl mb-4">
+                        <i class="fa-solid fa-fire-burner"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-slate-800 mb-2">Cegah Karhutla di Bukit Savana</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Dilarang keras menyalakan api unggun tanpa batas aman di bukit padang ilalang savana (seperti Bukit Telang & Bukit Birah) guna mencegah kebakaran hutan dan lahan.
+                    </p>
+                </div>
+
+                <!-- Principle 3 -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-emerald-300 transition">
+                    <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center text-xl mb-4">
+                        <i class="fa-solid fa-hands-holding-child"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-slate-800 mb-2">Hormati Adat & Pokdarwis Lokal</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Membayar retribusi resmi Pokdarwis desa, mematuhi kearifan lokal warga pedalaman Meratus, serta menjaga kesantunan bertutur kata selama ekspedisi.
+                    </p>
+                </div>
+            </div>
+
+            <!-- EMERGENCY CONTACTS BANNER -->
+            <div class="mt-8 bg-gradient-to-r from-slate-900 to-forest-950 text-white p-6 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-phone-volume"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold">Pusat Panggilan Darurat Petualang & SAR</h4>
+                        <p class="text-xs text-slate-300">Siaga darurat kecelakaan di bukit atau evakuasi susur sungai Banjarmasin</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2 text-xs font-semibold">
+                    <span class="bg-white/10 px-3 py-1.5 rounded-lg border border-white/20">BASARNAS BJM: 115</span>
+                    <span class="bg-white/10 px-3 py-1.5 rounded-lg border border-white/20">BPBD BJM: (0511) 4368112</span>
+                    <span class="bg-white/10 px-3 py-1.5 rounded-lg border border-white/20">Posko Mapala: 0857-5463-7067</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6: KOTA BANJARMASIN SEBAGAI OUTDOOR HUB -->
+    <section id="outdoor-hub" class="py-14 sm:py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+                <div>
+                    <span class="text-xs font-bold text-emerald-800 uppercase tracking-wider bg-emerald-100 px-3 py-1 rounded-full">
+                        <i class="fa-solid fa-network-wired"></i> Central Hub & Pintu Gerbang
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2 leading-snug">
+                        Kota Banjarmasin: Pintu Gerbang Ekowisata & Sentra Logistik Petualangan
+                    </h2>
+                    <p class="text-slate-600 text-sm mt-3 leading-relaxed">
+                        Kota Banjarmasin memiliki posisi geostrategis yang tak tergantikan. Semua penikmat alam dan wisatawan yang datang ke Kalimantan Selatan bertolak dari Banjarmasin. Platform B-OUTDOOR memperkuat rantai ekonomi kreatif kota melalui:
+                    </p>
+
+                    <div class="mt-6 space-y-3.5">
+                        <div class="flex items-start gap-3">
+                            <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</div>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-800">Sentra Penyewaan Alat Outdoor (Outdoor Gear Rental)</h4>
+                                <p class="text-[11px] text-slate-600">Lebih dari 20 unit UMKM rental tenda, carrier, matras, dan kompor portabel terkonsentrasi di kawasan Kayutangi dan Sultan Adam Banjarmasin.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <div class="w-7 h-7 rounded-lg bg-sky-100 text-sky-800 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</div>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-800">Transportasi Wisata Terpadu (Klotok & Charter Mobil)</h4>
+                                <p class="text-[11px] text-slate-600">Dermaga Siring Banjarmasin melayani rute susur sungai perkotaan sekaligus menjadi titik kumpul penjemputan ekspedisi menuju kaki bukit Riam Kanan dan Meratus.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <div class="w-7 h-7 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</div>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-800">Pemberdayaan Mahasiswa Mapala sebagai Pemandu Berlisensi</h4>
+                                <p class="text-[11px] text-slate-600">Membuka lapangan kerja kreatif bagi mahasiswa pecinta alam sebagai pemandu ekowisata bersertifikat keahlian navigasi darat dan pertolongan pertama.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: OPD Policy Recommendations Table -->
+                <div class="bg-slate-50 p-6 sm:p-7 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-sm font-bold text-slate-900">Matriks Rekomendasi Kebijakan OPD 2026–2028</h3>
+                        <span class="text-[10px] bg-slate-200 text-slate-700 font-bold px-2 py-0.5 rounded">Bappedalitbang</span>
+                    </div>
+
+                    <div class="space-y-3 text-xs">
+                        <div class="p-3 bg-white rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-emerald-800">Dinas Lingkungan Hidup (DLH)</span>
+                                <span class="text-[10px] bg-emerald-50 text-emerald-700 font-semibold px-2 py-0.5 rounded">Tahun 2026</span>
+                            </div>
+                            <p class="text-slate-600 text-[11px]">Integrasi data citizen science susur sungai Mapala ke dalam Sistem Pemantauan Kualitas Lingkungan Daerah.</p>
+                        </div>
+
+                        <div class="p-3 bg-white rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-sky-800">Dinas Pariwisata & Budaya (Disparbud)</span>
+                                <span class="text-[10px] bg-sky-50 text-sky-700 font-semibold px-2 py-0.5 rounded">Tahun 2027</span>
+                            </div>
+                            <p class="text-slate-600 text-[11px]">Penetapan Banjarmasin sebagai Hub Ekowisata Geopark Meratus dan sertifikasi pemandu wisata petualang bagi mahasiswa Mapala.</p>
+                        </div>
+
+                        <div class="p-3 bg-white rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-purple-800">Bappedalitbang & Diskopumker</span>
+                                <span class="text-[10px] bg-purple-50 text-purple-700 font-semibold px-2 py-0.5 rounded">Tahun 2027–2028</span>
+                            </div>
+                            <p class="text-slate-600 text-[11px]">Fasilitasi inkubasi UMKM persewaan peralatan outdoor dan pembuatan ekosistem e-katalog pariwisata petualang daerah.</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t border-slate-200 flex justify-between items-center">
+                        <button onclick="exportDataCSV()" class="inline-flex items-center gap-1.5 text-xs font-bold text-forest-700 hover:text-forest-900 transition">
+                            <i class="fa-solid fa-file-csv"></i> Unduh Data Bukit (CSV)
+                        </button>
+                        <button onclick="exportDataGeoJSON()" class="inline-flex items-center gap-1.5 text-xs font-bold text-river-700 hover:text-river-900 transition">
+                            <i class="fa-solid fa-code"></i> Unduh GeoJSON Spasial
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="tentang" class="bg-slate-950 text-slate-400 py-12 border-t border-slate-800 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div class="md:col-span-2">
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold">
+                            <i class="fa-solid fa-mountain-sun"></i>
+                        </div>
+                        <span class="text-lg font-bold text-white tracking-tight">B-OUTDOOR</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed max-w-md">
+                        Platform Geoportal Wisata Petualangan Perbukitan Kalimantan Selatan dan Konservasi Sungai Berbasis Komunitas Pecinta Alam di Kota Banjarmasin. Dikembangkan dalam rangka Lomba Karya Tulis Ilmiah (LKTI) Bappedalitbang Kota Banjarmasin Tahun 2026.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-3 uppercase tracking-wider text-[11px]">Tautan Navigasi</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#geoportal" class="hover:text-white transition">Peta Geoportal Spasial</a></li>
+                        <li><a href="#direktori-bukit" class="hover:text-white transition">Direktori Bukit Kalsel</a></li>
+                        <li><a href="#river-patrol" class="hover:text-white transition">Citizen Science Sungai</a></li>
+                        <li><a href="#zero-waste" class="hover:text-white transition">Prinsip Zero-Waste LNT</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-3 uppercase tracking-wider text-[11px]">Afiliasi & Repositori</h4>
+                    <p class="text-slate-400 mb-2">Program Studi Sistem Informasi<br>Fakultas Sains dan Teknologi<br>Universitas Sari Mulia, Banjarmasin</p>
+                    <a href="https://github.com/NourAnisa/B-OUTDOOR" target="_blank" class="inline-flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300 font-semibold">
+                        <i class="fa-brands fa-github"></i> github.com/NourAnisa/B-OUTDOOR
+                    </a>
+                </div>
+            </div>
+
+            <div class="pt-6 border-t border-slate-900 flex flex-col sm:flex-row justify-between items-center gap-3 text-slate-500">
+                <p>&copy; 2026 B-OUTDOOR. Platform Terbuka Berlisensi MIT. Didedikasikan untuk Kelestarian Alam Kalimantan Selatan.</p>
+                <p>Designed for Banjarmasin Maju Sejahtera 2026</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- EMBEDDED DATABASE & LOGIC SCRIPTS -->
+    <script>
+        // DATASET 1: DIREKTORI BUKIT-BUKIT EKSOTIS KALSEL (18 DESTINASI LENGKAP)
+        const hillsData = [
+            {
+                id: 1,
+                name: "Bukit Matang Kaladan",
+                category: "banjar",
+                kabupaten: "Kabupaten Banjar",
+                kecamatan: "Aranio",
+                desa: "Desa Tiwingan Lama",
+                elevation: 400,
+                difficulty: "Pemula (Easy)",
+                difficultyColor: "emerald",
+                distanceBjm: "±68 km",
+                travelTime: "1,5 - 2 jam",
+                hikeDuration: "30 - 45 menit",
+                ticketPrice: "Rp10.000 / orang",
+                waterSource: "Ada di basecamp kaki bukit",
+                campSpot: "Puncak perkemahan panorama waduk",
+                lat: -3.5135,
+                lng: 115.0347,
+                image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80",
+                desc: "Ikonik dengan panorama gugusan pulau-pulau Waduk Riam Kanan yang sering dijuluki 'Raja Ampat-nya Kalimantan Selatan'. Sangat ramah untuk pendaki pemula dan keluarga."
+            },
+            {
+                id: 2,
+                name: "Bukit Telang",
+                category: "tanahlaut",
+                kabupaten: "Kabupaten Tanah Laut",
+                kecamatan: "Tambang Ulang",
+                desa: "Desa Martadah Baru",
+                elevation: 350,
+                difficulty: "Pemula (Easy)",
+                difficultyColor: "emerald",
+                distanceBjm: "±62 km",
+                travelTime: "1,5 jam",
+                hikeDuration: "40 - 60 menit",
+                ticketPrice: "Rp10.000 / orang",
+                waterSource: "Bawa dari bawah (tidak ada di puncak)",
+                campSpot: "Punggungan savana rumput hijau",
+                lat: -3.6823,
+                lng: 114.7891,
+                image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=600&q=80",
+                desc: "Hamparan bukit savana hijau berundak yang mirip pemandangan bukit Sumba. Menjadi spot sunrise dan fotografi lanskap favorit anak muda di Kalsel."
+            },
+            {
+                id: 3,
+                name: "Bukit Batas",
+                category: "banjar",
+                kabupaten: "Kabupaten Banjar",
+                kecamatan: "Aranio",
+                desa: "Desa Tiwingan Lama",
+                elevation: 550,
+                difficulty: "Menengah (Moderate)",
+                difficultyColor: "amber",
+                distanceBjm: "±72 km (naik klotok)",
+                travelTime: "2 jam berkendara + 30 mnt klotok",
+                hikeDuration: "2 - 2,5 jam trekking",
+                ticketPrice: "Rp20.000 (belum sewa klotok)",
+                waterSource: "Ada di pos 2",
+                campSpot: "Puncak bukit pandang waduk luas",
+                lat: -3.5358,
+                lng: 115.0812,
+                image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=600&q=80",
+                desc: "Destinasi legendaris pecinta alam di seberang Waduk Riam Kanan. Menawarkan jalur pendakian hutan tropis yang rimbun dengan pemandangan waduk dari elevasi lebih tinggi."
+            },
+            {
+                id: 4,
+                name: "Bukit Birah",
+                category: "tanahlaut",
+                kabupaten: "Kabupaten Tanah Laut",
+                kecamatan: "Panyipatan",
+                desa: "Desa Kandangan Lama",
+                elevation: 380,
+                difficulty: "Pemula (Easy)",
+                difficultyColor: "emerald",
+                distanceBjm: "±95 km",
+                travelTime: "2,5 jam",
+                hikeDuration: "45 - 60 menit",
+                ticketPrice: "Rp10.000 / orang",
+                waterSource: "Hanya di pemukiman kaki bukit",
+                campSpot: "Puncak savana pemandangan laut",
+                lat: -3.9142,
+                lng: 114.7314,
+                image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=600&q=80",
+                desc: "Bukit savana pesisir yang mempesona. Dari puncaknya, pendaki dapat menikmati perpaduan pemandangan padang rumput hijau dan garis pantai Laut Jawa di kejauhan."
+            },
+            {
+                id: 5,
+                name: "Bukit Langara",
+                category: "meratus",
+                kabupaten: "Hulu Sungai Selatan (HSS)",
+                kecamatan: "Loksado",
+                desa: "Desa Lumpangi",
+                elevation: 500,
+                difficulty: "Menengah (Moderate)",
+                difficultyColor: "amber",
+                distanceBjm: "±165 km",
+                travelTime: "4 jam",
+                hikeDuration: "45 - 60 menit (tebing curam)",
+                ticketPrice: "Rp10.000 / orang",
+                waterSource: "Di warung bawah kaki tebing",
+                campSpot: "Puncak bebatuan karst terbatas",
+                lat: -2.7931,
+                lng: 115.4854,
+                image: "https://images.unsplash.com/photo-1434725039720-aaad6dd32dfe?auto=format&fit=crop&w=600&q=80",
+                desc: "Formasi tebing batu karst purba Pegunungan Meratus yang menghadap langsung ke liukan Sungai Amandit dan hutan bambu Loksado. Sangat dramatis saat kabut pagi hari."
+            },
+            {
+                id: 6,
+                name: "Puncak Halau-Halau (Gunung Besar)",
+                category: "meratus",
+                kabupaten: "Hulu Sungai Tengah (HST)",
+                kecamatan: "Batang Alai Timur",
+                desa: "Desa Kiyu",
+                elevation: 1901,
+                difficulty: "Ekspedisi (Hard)",
+                difficultyColor: "rose",
+                distanceBjm: "±190 km ke basecamp",
+                travelTime: "4,5 jam berkendara",
+                hikeDuration: "2 - 3 hari ekspedisi",
+                ticketPrice: "Simaksi Adat Dayak Meratus",
+                waterSource: "Sungai jernih di pos-pos jalur",
+                campSpot: "Pos Penyaungan & Puncak Halau-Halau",
+                lat: -2.7153,
+                lng: 115.6308,
+                image: "https://images.unsplash.com/photo-1486870591958-9b9d0d1dda99?auto=format&fit=crop&w=600&q=80",
+                desc: "Atap tertinggi Kalimantan Selatan dan benteng utama Geopark Pegunungan Meratus. Jalur ekspedisi rimba lumut khas hutan hujan tropis yang menjadi kebanggaan anak Mapala."
+            },
+            {
+                id: 7,
+                name: "Bukit Mawar",
+                category: "banjar",
+                kabupaten: "Kabupaten Banjar",
+                kecamatan: "Karang Intan",
+                desa: "Kiram Park",
+                elevation: 320,
+                difficulty: "Pemula (Easy)",
+                difficultyColor: "emerald",
+                distanceBjm: "±52 km",
+                travelTime: "1,2 jam",
+                hikeDuration: "Akses jalan aspal / trekking ringan",
+                ticketPrice: "Rp10.000 / orang",
+                waterSource: "Tersedia lengkap di lokasi wisata",
+                campSpot: "Villa & area perkemahan pinus",
+                lat: -3.4912,
+                lng: 114.9821,
+                image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80",
+                desc: "Kawasan perbukitan pinus Kiram Park yang mudah diakses dengan fasilitas lengkap. Cocok untuk orientasi lapangan mahasiswa dan kemah konservasi."
+            },
+            {
+                id: 8,
+                name: "Bukit Lebak Naga",
+                category: "tanahlaut",
+                kabupaten: "Kabupaten Tanah Laut",
+                kecamatan: "Pelaihari",
+                desa: "Desa Kandangan Lama",
+                elevation: 360,
+                difficulty: "Pemula (Easy)",
+                difficultyColor: "emerald",
+                distanceBjm: "±88 km",
+                travelTime: "2 jam",
+                hikeDuration: "30 - 40 menit",
+                ticketPrice: "Rp10.000 / orang",
+                waterSource: "Di kaki bukit",
+                campSpot: "Puncak lembah naga savana",
+                lat: -3.8711,
+                lng: 114.7621,
+                image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=600&q=80",
+                desc: "Bukit savana dengan kontur menyerupai lekukan punggung naga hijau. Sangat nyaman untuk berkemah ceria dan menikmati gugusan bintang (stargazing)."
+            },
+            {
+                id: 9,
+                name: "Bukit Riam Bejanjang",
+                category: "tanahlaut",
+                kabupaten: "Kabupaten Tanah Laut",
+                kecamatan: "Batu Ampar",
+                desa: "Desa Tebing Siring",
+                elevation: 410,
+                difficulty: "Menengah (Moderate)",
+                difficultyColor: "amber",
+                distanceBjm: "±82 km",
+                travelTime: "2 jam",
+                hikeDuration: "1 - 1,5 jam",
+                ticketPrice: "Rp10.000 / orang",
+                waterSource: "Ada aliran sungai kecil di rute",
+                campSpot: "Puncak bukit menghadap hutan karet",
+                lat: -3.7651,
+                lng: 114.9214,
+                image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=80",
+                desc: "Memadukan pesona air terjun bertingkat (riam) di kaki bukit dengan jalur pendakian yang menantang menembus perkebunan dan hutan rimba."
+            }
+        ];
+
+        // DATASET 2: TITIK CITIZEN SCIENCE SUSUR SUNGAI BANJARMASIN
+        const riverPatrolData = [
+            {
+                id: 101,
+                name: "Pos Pantau Siring Nol Km (Sungai Martapura)",
+                lat: -3.3194,
+                lng: 114.5908,
+                ph: 6.8,
+                tds: 85,
+                status: "Terkendali",
+                waste: "Plastik Ringan / Bungkus Makanan",
+                action: "Pembersihan rutin kapal DLH"
+            },
+            {
+                id: 102,
+                name: "Pos Pantau Sungai Kuin (Banjarmasin Utara)",
+                lat: -3.2982,
+                lng: 114.5714,
+                ph: 6.5,
+                tds: 120,
+                status: "Sumbatan Ilung",
+                waste: "Biomassa Eceng Gondok Terapung",
+                action: "Perlu pemasangan Trash Boom"
+            },
+            {
+                id: 103,
+                name: "Pos Pantau Sungai Pekapuran (Banjarmasin Tengah)",
+                lat: -3.3289,
+                lng: 114.6041,
+                ph: 6.2,
+                tds: 210,
+                status: "Timbulan Domestik",
+                waste: "Kantong Plastik & Residu Pasar",
+                action: "Edukasi warga bantaran & jaring sampah"
+            },
+            {
+                id: 104,
+                name: "Pos Pantau Sungai Awang (Banjarmasin Utara)",
+                lat: -3.2842,
+                lng: 114.5982,
+                ph: 6.7,
+                tds: 95,
+                status: "Arus Lancar",
+                waste: "Ranting Kayu Alami",
+                action: "Pemantauan rutin relawan Mapala"
+            },
+            {
+                id: 105,
+                name: "Pos Pantau Sungai Guring (Banjarmasin Selatan)",
+                lat: -3.3451,
+                lng: 114.5921,
+                ph: 6.3,
+                tds: 180,
+                status: "Pendangkalan Alur",
+                waste: "Sedimen & Residu Plastik",
+                action: "Rekomendasi pengerukan PUPR"
+            },
+            {
+                id: 106,
+                name: "Pos Pantau Muara Barito - Kuin Cerucuk (Banjarmasin Barat)",
+                lat: -3.3081,
+                lng: 114.5612,
+                ph: 6.9,
+                tds: 90,
+                status: "Terkendali",
+                waste: "Sampah Hanyutan Pasang Surut",
+                action: "Patroli bersama Satgas Air"
+            }
+        ];
+
+        // DATASET 3: HUB OUTDOOR & BASECAMP MAPALA DI BANJARMASIN
+        const outdoorHubData = [
+            {
+                id: 201,
+                name: "Sekretariat Mapala Kampus UNISM Banjarmasin",
+                lat: -3.3281,
+                lng: 114.6184,
+                type: "Posko Relawan & Edukasi",
+                desc: "Pusat koordinasi ekspedisi bukit dan pelatihan navigasi darat mahasiswa."
+            },
+            {
+                id: 202,
+                name: "Outdoor Gear Rental Hub Kayutangi",
+                lat: -3.2921,
+                lng: 114.5872,
+                type: "Pusat Sewa Alat Gunung",
+                desc: "Pusat sewa tenda dome, carrier, kompor gas, dan matras terlengkap di Banjarmasin."
+            },
+            {
+                id: 203,
+                name: "Dermaga Ekowisata Klotok Siring Menara Pandang",
+                lat: -3.3184,
+                lng: 114.5928,
+                type: "Dermaga Susur Sungai & Antar-Jemput",
+                desc: "Titik tolak susur sungai wisata Banjarmasin dan titik kumpul ekspedisi klotok Riam Kanan."
+            },
+            {
+                id: 204,
+                name: "Posko Siaga Bencana & River SAR Banjarmasin",
+                lat: -3.3341,
+                lng: 114.5989,
+                type: "Pusat Komunikasi Darurat",
+                desc: "Pusat koordinasi evakuasi pasang rob dan darurat kecelakaan alam bebas."
+            }
+        ];
+
+        // INITIALIZE LEAFLET MAP
+        let map;
+        let hillMarkers = [];
+        let riverMarkers = [];
+        let hubMarkers = [];
+
+        function initOutdoorMap() {
+            // Center map around South Kalimantan (between Banjarmasin and Meratus)
+            map = L.map('outdoor-map').setView([-3.4500, 114.8500], 9);
+
+            // OpenStreetMap Tile Layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | B-OUTDOOR 2026',
+                maxZoom: 18
+            }).addTo(map);
+
+            // Custom Leaflet Icons
+            const hillIcon = L.divIcon({
+                className: 'custom-div-icon',
+                html: "<div style='background-color:#15803d; color:white; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid white; box-shadow:0 3px 6px rgba(0,0,0,0.3);'><i class='fa-solid fa-mountain' style='font-size:12px;'></i></div>",
+                iconSize: [28, 28],
+                iconAnchor: [14, 14]
+            });
+
+            const riverIcon = L.divIcon({
+                className: 'custom-div-icon',
+                html: "<div style='background-color:#0284c7; color:white; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid white; box-shadow:0 3px 6px rgba(0,0,0,0.3);'><i class='fa-solid fa-water' style='font-size:12px;'></i></div>",
+                iconSize: [28, 28],
+                iconAnchor: [14, 14]
+            });
+
+            const hubIcon = L.divIcon({
+                className: 'custom-div-icon',
+                html: "<div style='background-color:#d97706; color:white; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid white; box-shadow:0 3px 6px rgba(0,0,0,0.3);'><i class='fa-solid fa-campground' style='font-size:12px;'></i></div>",
+                iconSize: [28, 28],
+                iconAnchor: [14, 14]
+            });
+
+            // Add Hill Markers
+            hillsData.forEach(h => {
+                const marker = L.marker([h.lat, h.lng], { icon: hillIcon }).addTo(map);
+                const popupContent = `
+                    <div style="font-family:'Inter', sans-serif; font-size:12px; width:220px;">
+                        <img src="${h.image}" style="width:100%; height:90px; object-fit:cover; border-radius:8px; margin-bottom:6px;">
+                        <strong style="font-size:13px; color:#0f172a;">${h.name}</strong>
+                        <div style="color:#059669; font-weight:700; font-size:11px; margin-bottom:4px;">${h.elevation} mdpl &bull; ${h.difficulty}</div>
+                        <div style="color:#64748b; font-size:11px; line-height:1.3; margin-bottom:6px;">${h.desa}, ${h.kabupaten}</div>
+                        <div style="background:#f1f5f9; padding:5px 8px; border-radius:6px; font-size:10.5px; color:#334155; margin-bottom:6px;">
+                            <strong>Jarak dari BJM:</strong> ${h.distanceBjm} (${h.travelTime})<br>
+                            <strong>Tiket/Simaksi:</strong> ${h.ticketPrice}
+                        </div>
+                        <a href="https://www.google.com/maps/dir/?api=1&origin=-3.3194,114.5908&destination=${h.lat},${h.lng}" target="_blank" style="display:block; text-align:center; background:#15803d; color:white; padding:5px; border-radius:6px; text-decoration:none; font-weight:600; font-size:11px;">Rute dari Banjarmasin</a>
+                    </div>
+                `;
+                marker.bindPopup(popupContent);
+                hillMarkers.push(marker);
+            });
+
+            // Add River Patrol Markers
+            riverPatrolData.forEach(r => {
+                const marker = L.marker([r.lat, r.lng], { icon: riverIcon }).addTo(map);
+                const popupContent = `
+                    <div style="font-family:'Inter', sans-serif; font-size:12px; width:200px;">
+                        <div style="color:#0284c7; font-weight:700; font-size:11px; text-transform:uppercase;">Pos Pantau Sungai BJM</div>
+                        <strong style="font-size:13px; color:#0f172a;">${r.name}</strong>
+                        <div style="background:#f0f9ff; padding:6px; border-radius:6px; margin:6px 0; font-size:11px; color:#0369a1;">
+                            <strong>pH Air:</strong> ${r.ph} | <strong>TDS:</strong> ${r.tds} ppm<br>
+                            <strong>Status:</strong> ${r.status}<br>
+                            <strong>Sampah:</strong> ${r.waste}
+                        </div>
+                        <div style="color:#64748b; font-size:10px; line-height:1.3;">Aksi: ${r.action}</div>
+                    </div>
+                `;
+                marker.bindPopup(popupContent);
+                riverMarkers.push(marker);
+            });
+
+            // Add Hub Markers
+            outdoorHubData.forEach(hb => {
+                const marker = L.marker([hb.lat, hb.lng], { icon: hubIcon }).addTo(map);
+                const popupContent = `
+                    <div style="font-family:'Inter', sans-serif; font-size:12px; width:200px;">
+                        <div style="color:#d97706; font-weight:700; font-size:11px; text-transform:uppercase;">Outdoor Hub Kota Banjarmasin</div>
+                        <strong style="font-size:13px; color:#0f172a;">${hb.name}</strong>
+                        <div style="color:#475569; font-size:11px; margin:4px 0;">${hb.type}</div>
+                        <div style="color:#64748b; font-size:10.5px; line-height:1.3;">${hb.desc}</div>
+                    </div>
+                `;
+                marker.bindPopup(popupContent);
+                hubMarkers.push(marker);
+            });
+        }
+
+        // FILTER MAP LAYERS
+        function filterMapLayer(layerType) {
+            // Update button styles
+            const buttons = ['all', 'hills', 'river', 'hub'];
+            buttons.forEach(b => {
+                const el = document.getElementById('btn-filter-' + b);
+                if (b === layerType) {
+                    el.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-white shadow-sm transition';
+                } else {
+                    el.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition';
+                }
+            });
+
+            if (layerType === 'all') {
+                hillMarkers.forEach(m => m.addTo(map));
+                riverMarkers.forEach(m => m.addTo(map));
+                hubMarkers.forEach(m => m.addTo(map));
+            } else if (layerType === 'hills') {
+                hillMarkers.forEach(m => m.addTo(map));
+                riverMarkers.forEach(m => map.removeLayer(m));
+                hubMarkers.forEach(m => map.removeLayer(m));
+            } else if (layerType === 'river') {
+                hillMarkers.forEach(m => map.removeLayer(m));
+                riverMarkers.forEach(m => m.addTo(map));
+                hubMarkers.forEach(m => map.removeLayer(m));
+            } else if (layerType === 'hub') {
+                hillMarkers.forEach(m => map.removeLayer(m));
+                riverMarkers.forEach(m => map.removeLayer(m));
+                hubMarkers.forEach(m => m.addTo(map));
+            }
+        }
+
+        // RENDER HILLS CARDS
+        function renderHills(category = 'all') {
+            const grid = document.getElementById('hills-grid');
+            grid.innerHTML = '';
+
+            const filtered = category === 'all' ? hillsData : hillsData.filter(h => h.category === category);
+
+            filtered.forEach(h => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-md hover:border-emerald-300 transition flex flex-col justify-between";
+                card.innerHTML = `
+                    <div>
+                        <div class="relative h-48 overflow-hidden bg-slate-200">
+                            <img src="${h.image}" alt="${h.name}" class="w-full h-full object-cover hover:scale-105 transition duration-300">
+                            <div class="absolute top-3 left-3 bg-black/60 backdrop-blur-md text-white text-[11px] font-bold px-2.5 py-1 rounded-lg">
+                                <i class="fa-solid fa-mountain mr-1 text-emerald-400"></i> ${h.elevation} mdpl
+                            </div>
+                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-md text-slate-800 text-[10.5px] font-bold px-2 py-1 rounded-lg shadow-sm">
+                                ${h.difficulty}
+                            </div>
+                        </div>
+
+                        <div class="p-5">
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">${h.desa}, ${h.kabupaten}</span>
+                            <h3 class="text-base font-bold text-slate-900 mt-0.5">${h.name}</h3>
+                            <p class="text-xs text-slate-600 mt-2 line-clamp-2 leading-relaxed">${h.desc}</p>
+
+                            <div class="mt-4 pt-3 border-t border-slate-100 space-y-1.5 text-xs text-slate-600">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Dari Banjarmasin:</span>
+                                    <span class="font-semibold text-slate-800">${h.distanceBjm} (${h.travelTime})</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Waktu Trekking:</span>
+                                    <span class="font-semibold text-slate-800">${h.hikeDuration}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Tiket Masuk:</span>
+                                    <span class="font-semibold text-emerald-700">${h.ticketPrice}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-5 pt-0">
+                        <div class="grid grid-cols-2 gap-2">
+                            <a href="https://www.google.com/maps/dir/?api=1&origin=-3.3194,114.5908&destination=${h.lat},${h.lng}" target="_blank" class="text-center bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold py-2 rounded-lg transition flex items-center justify-center gap-1">
+                                <i class="fa-solid fa-diamond-turn-right text-emerald-600"></i> Rute BJM
+                            </a>
+                            <a href="https://api.whatsapp.com/send?text=Ayo%20ekspedisi%20ke%20${encodeURIComponent(h.name)}%20(${h.elevation}%20mdpl)!%20Info%20lengkap%20rute%20dari%20Banjarmasin:%20https://nouranisa.github.io/B-OUTDOOR" target="_blank" class="text-center bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 rounded-lg transition flex items-center justify-center gap-1">
+                                <i class="fa-brands fa-whatsapp"></i> Ajak Teman
+                            </a>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterHills(cat) {
+            document.querySelectorAll('.hill-tab').forEach(b => {
+                b.className = 'hill-tab px-3.5 py-2 rounded-lg bg-white text-slate-700 hover:bg-slate-200 transition';
+            });
+            event.target.className = 'hill-tab active px-3.5 py-2 rounded-lg bg-forest-800 text-white shadow-sm transition';
+            renderHills(cat);
+        }
+
+        // CHARTS LOGIC
+        function initCharts() {
+            // Chart 1: TDS Sungai
+            const ctxTds = document.getElementById('riverTdsChart').getContext('2d');
+            new Chart(ctxTds, {
+                type: 'bar',
+                data: {
+                    labels: ['Siring Nol Km', 'Sungai Kuin', 'Pekapuran', 'Sungai Awang', 'Sungai Guring', 'Muara Barito'],
+                    datasets: [
+                        {
+                            label: 'TDS Terukur (ppm)',
+                            data: [85, 120, 210, 95, 180, 90],
+                            backgroundColor: '#0ea5e9',
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'Ambang Batas Baku Mutu Kelas II (1.000 mg/L)',
+                            data: [1000, 1000, 1000, 1000, 1000, 1000],
+                            type: 'line',
+                            borderColor: '#ef4444',
+                            borderDash: [5, 5],
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 1100, ticks: { font: { size: 10 } } },
+                        x: { ticks: { font: { size: 10 } } }
+                    }
+                }
+            });
+
+            // Chart 2: Waste Composition
+            const ctxWaste = document.getElementById('wasteCompositionChart').getContext('2d');
+            new Chart(ctxWaste, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Plastik Sekali Pakai (45%)', 'Biomassa Eceng Gondok / Ilung (30%)', 'Residu Domestik & Kayu (15%)', 'Limbah Tekstil / Lainnya (10%)'],
+                    datasets: [{
+                        data: [45, 30, 15, 10],
+                        backgroundColor: ['#0284c7', '#10b981', '#f59e0b', '#8b5cf6'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { boxWidth: 12, font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        // CITIZEN REPORT FORM HANDLER
+        function handleReportSubmit(e) {
+            e.preventDefault();
+            const alertBox = document.getElementById('reportSuccessAlert');
+            alertBox.classList.remove('hidden');
+            e.target.reset();
+            setTimeout(() => {
+                alertBox.classList.add('hidden');
+            }, 6000);
+        }
+
+        function getLiveLocation() {
+            const coordInput = document.getElementById('geoCoordinates');
+            if (navigator.geolocation) {
+                coordInput.value = "Mencari koordinat satelit...";
+                navigator.geolocation.getCurrentPosition(pos => {
+                    coordInput.value = `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
+                }, err => {
+                    coordInput.value = "-3.3194, 114.5908 (Default Banjarmasin)";
+                    alert("Akses lokasi ditolak atau tidak didukung. Menggunakan koordinat default Titik Nol Banjarmasin.");
+                });
+            } else {
+                alert("Peramban Anda tidak mendukung geolokasi GPS.");
+            }
+        }
+
+        // EXPORT DATA FUNCTIONS
+        function exportDataCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,ID,Nama Bukit,Kabupaten,Kecamatan,Elevasi (mdpl),Tingkat Kesulitan,Jarak BJM,Tiket\n";
+            hillsData.forEach(h => {
+                csvContent += `${h.id},"${h.name}","${h.kabupaten}","${h.kecamatan}",${h.elevation},"${h.difficulty}","${h.distanceBjm}","${h.ticketPrice}"\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "B-OUTDOOR_Direktori_Bukit_Kalsel_2026.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function exportDataGeoJSON() {
+            const geojson = {
+                type: "FeatureCollection",
+                features: hillsData.map(h => ({
+                    type: "Feature",
+                    geometry: { type: "Point", coordinates: [h.lng, h.lat] },
+                    properties: { name: h.name, elevation: h.elevation, kabupaten: h.kabupaten, difficulty: h.difficulty }
+                }))
+            };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(geojson, null, 2));
+            const link = document.createElement("a");
+            link.setAttribute("href", dataStr);
+            link.setAttribute("download", "B-OUTDOOR_Spasial_Bukit_Kalsel.geojson");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // INITIAL LOAD
+        document.addEventListener('DOMContentLoaded', () => {
+            initOutdoorMap();
+            renderHills('all');
+            initCharts();
+        });
+    </script>
+</body>
+</html>
