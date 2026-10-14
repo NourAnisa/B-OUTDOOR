@@ -851,7 +851,7 @@ def build_full_paper_b_outdoor():
     add_numbered_item(doc, 4, "Formulir Partisipatif Pelaporan Cepat: ", "Memungkinkan masyarakat dan penggiat alam melaporkan timbulan sampah liar di sungai atau kerusakan jalur bukit dengan deteksi koordinat GPS otomatis dari peramban web.")
     add_numbered_item(doc, 5, "Modul Zero-Waste Leave No Trace: ", "Panduan etika konservasi 7 prinsip LNT dan daftar kontak darurat terpadu BASARNAS, BPBD, dan posko relawan Mapala.")
 
-    add_figure(doc, "fig_4_4_geoportal_ui.png", "Gambar 4.4 Tangkapan Layar Antarmuka Platform Geoportal B-OUTDOOR (WebGIS Multi-Layer dan Modul LNT)", width_cm=13.2)
+    add_figure(doc, "fig_4_4_real_screenshot.png", "Gambar 4.4 Tangkapan Layar Antarmuka Platform WebGIS Geoportal B-OUTDOOR: (a) Peta Interaktif Spasial Multi-Layer Leaflet.js; (b) Direktori Geospasial Perbukitan Eksotis Kalimantan Selatan", width_cm=13.5)
 
     add_sub_bab(doc, "4.5 Pembahasan Komprehensif dan Triangulasi terhadap Pembangunan Daerah")
     add_para(doc,
@@ -967,7 +967,8 @@ def build_full_paper_b_outdoor():
         col_widths_cm=[0.8, 3.8, 5.5, 3.9]
     )
 
-    add_figure(doc, "fig_hills_gallery.png", "Lampiran Gambar 1. Dokumentasi Lanskap 9 Destinasi Perbukitan Unggulan Kalimantan Selatan pada Platform B-OUTDOOR", width_cm=13.5)
+    add_figure(doc, "screenshot_real_web.png", "Lampiran Gambar 1. Tangkapan Layar Beranda Utama (Hero Header) Platform Geoportal B-OUTDOOR", width_cm=13.5)
+    add_figure(doc, "fig_hills_gallery.png", "Lampiran Gambar 2. Dokumentasi Lanskap 9 Destinasi Perbukitan Unggulan Kalimantan Selatan pada Platform B-OUTDOOR", width_cm=13.5)
 
     for s in doc.sections:
         configure_section_margins(s)
